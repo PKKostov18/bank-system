@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 /**
- * Summarises the current state of a loan for "check loan status" queries.
+ * Summarizes the current state of a loan for "check loan status" queries.
  */
 @Data
 @Builder

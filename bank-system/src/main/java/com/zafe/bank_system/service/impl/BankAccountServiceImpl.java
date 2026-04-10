@@ -8,7 +8,7 @@ import com.zafe.bank_system.enums.AccountStatus;
 import com.zafe.bank_system.exception.BankAccountClosedException;
 import com.zafe.bank_system.exception.BankAccountNotFoundException;
 import com.zafe.bank_system.exception.CustomerNotFoundException;
-import com.zafe.bank_system.exception.DuplicateCustomerException;
+import com.zafe.bank_system.exception.DuplicateIbanException;
 import com.zafe.bank_system.mapper.BankAccountMapper;
 import com.zafe.bank_system.repository.BankAccountRepository;
 import com.zafe.bank_system.repository.CustomerRepository;
@@ -31,7 +31,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Transactional
     public BankAccountResponse openAccount(OpenBankAccountRequest request) {
         if (bankAccountRepository.existsByIban(request.getIban())) {
-            throw new DuplicateCustomerException("IBAN", request.getIban());
+            throw new DuplicateIbanException(request.getIban());
         }
 
         Customer customer = customerRepository.findById(request.getCustomerId())

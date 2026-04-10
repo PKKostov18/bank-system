@@ -43,6 +43,11 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(DuplicateIbanException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateIban(DuplicateIbanException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     @ExceptionHandler(DuplicateCustomerException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateCustomer(DuplicateCustomerException ex) {
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
