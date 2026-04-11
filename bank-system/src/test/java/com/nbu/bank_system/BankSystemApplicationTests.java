@@ -1,4 +1,4 @@
-package com.zafe.bank_system;
+package com.nbu.bank_system;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
