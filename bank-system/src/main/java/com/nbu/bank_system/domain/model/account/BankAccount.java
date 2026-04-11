@@ -35,7 +35,10 @@ import java.math.BigDecimal;
 public class BankAccount extends BaseEntity {
 
     @NotBlank
-    @Pattern(regexp = "^[A-Z]{2}[0-9A-Z]{13,32}$", message = "Invalid IBAN format")
+    @Pattern(
+            regexp = "^BG\\d{2}[A-Z]{4}\\d{4}\\d{2}\\d{8}$",
+            message = "Invalid Bulgarian IBAN format. Expected: BG + 2 digits + 4 letters + 4 digits + 2 digits + 8 digits."
+    )
     @Column(name = "iban", nullable = false, length = 34)
     private String iban;
 
