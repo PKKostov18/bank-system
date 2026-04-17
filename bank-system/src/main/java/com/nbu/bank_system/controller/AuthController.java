@@ -1,0 +1,40 @@
+package com.nbu.bank_system.controller;
+
+import com.nbu.bank_system.dto.auth.AuthResponse;
+import com.nbu.bank_system.dto.auth.ChangePasswordRequest;
+import com.nbu.bank_system.dto.auth.ChangePasswordResponse;
+import com.nbu.bank_system.dto.auth.LoginRequest;
+import com.nbu.bank_system.service.AuthService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
+
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ChangePasswordResponse> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            Authentication authentication
+    ) {
+        authService.changePassword(authentication.getName(), request);
+        return ResponseEntity.ok(new ChangePasswordResponse("Password changed successfully"));
+    }
+}
+

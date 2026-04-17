@@ -49,3 +49,58 @@ bank-system-project/
 ├── bank-frontend/          # React + TypeScript UI
 └── docker/                 # Infrastructure configuration
     └── docker-compose.yml
+
+## Temporary Password Email Delivery
+
+Customer onboarding now sends the generated temporary password directly to the customer email.
+The API no longer returns plaintext temporary passwords.
+
+### Required backend environment variables
+
+- `MAIL_HOST`
+- `MAIL_PORT`
+- `MAIL_USERNAME`
+- `MAIL_PASSWORD`
+- `MAIL_SMTP_AUTH`
+- `MAIL_SMTP_STARTTLS`
+- `APP_MAIL_FROM`
+
+You can store these in `bank-system/.env` (auto-loaded by Spring) instead of setting IDE environment variables.
+
+Setup for new developers:
+
+```powershell
+Copy-Item "bank-system/.env.example" "bank-system/.env"
+```
+
+Default local development values are configured for SMTP on `localhost:1025` (MailHog/Mailpit).
+
+### Local mail testing with MailHog
+
+```powershell
+docker run -d --name bank-mailhog -p 1025:1025 -p 8025:8025 mailhog/mailhog
+```
+
+Mail inbox UI:
+
+- `http://localhost:8025`
+
+When onboarding succeeds, customers receive an email with their temporary password and first-login instructions.
+
+### Real SMTP delivery (example for ABV)
+
+Set environment variables before starting backend:
+
+```powershell
+$env:MAIL_HOST="smtp.abv.bg"
+$env:MAIL_PORT="465"
+$env:MAIL_USERNAME="your_abv_email@abv.bg"
+$env:MAIL_PASSWORD="your_abv_password"
+$env:MAIL_SMTP_AUTH="true"
+$env:MAIL_SMTP_STARTTLS="false"
+$env:MAIL_SMTP_SSL="true"
+$env:APP_MAIL_FROM="your_abv_email@abv.bg"
+```
+
+The onboarding response now includes `emailDeliveryChannel` and `emailRelay` so you can verify whether emails go to local MailHog or external SMTP.
+

@@ -4,6 +4,7 @@ import com.nbu.bank_system.domain.model.BaseEntity;
 import com.nbu.bank_system.domain.model.account.BankAccount;
 import com.nbu.bank_system.domain.model.loan.Loan;
 import com.nbu.bank_system.domain.enums.CustomerType;
+import com.nbu.bank_system.domain.enums.UserRole;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -16,7 +17,9 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,6 +38,25 @@ public abstract class Customer extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "customer_type", nullable = false, length = 20)
     private CustomerType customerType;
+
+    @Email
+    @Size(max = 255)
+    @Column(name = "email", nullable = false, unique = true, length = 255)
+    private String email;
+
+    @NotNull
+    @Size(max = 255)
+    @Column(name = "password_hash", nullable = false, length = 255)
+    private String passwordHash;
+
+    @NotNull
+    @Column(name = "is_first_login", nullable = false)
+    private Boolean firstLogin = true;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_role", nullable = false, length = 20)
+    private UserRole userRole = UserRole.CUSTOMER;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Set<BankAccount> bankAccounts = new HashSet<>();
@@ -63,5 +85,33 @@ public abstract class Customer extends BaseEntity {
 
     public Set<Loan> getLoans() {
         return loans;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public Boolean isFirstLogin() {
+        return firstLogin;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void assignOnlineBankingCredentials(String email, String passwordHash, boolean firstLogin, UserRole userRole) {
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.firstLogin = firstLogin;
+        this.userRole = userRole;
+    }
+
+    public void changePassword(String newPasswordHash) {
+        this.passwordHash = newPasswordHash;
+        this.firstLogin = false;
     }
 }

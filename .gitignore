@@ -37,3 +37,10 @@ bank-frontend/.env.local
 bank-frontend/.env.development.local
 bank-frontend/.env.test.local
 bank-frontend/.env.production.local
+
+# =========================
+# Backend local secrets
+# =========================
+bank-system/.env
+bank-system/.env.*
+!bank-system/.env.example

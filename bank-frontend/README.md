@@ -71,3 +71,19 @@ export default defineConfig([
   },
 ])
 ```
+
+## Secret Admin Onboarding Form
+
+A browser form is available for creating customers through the hidden admin endpoints.
+
+- Route: `/admin/secret-onboarding`
+- Full local URL: `http://localhost:5173/admin/secret-onboarding`
+- Required header value is entered in the form as `Admin secret`
+- Backend setting: `app.admin.secret` (default fallback: `SuperSecretAdminKey123`)
+
+The form supports both:
+
+- Individual customer onboarding
+- Corporate customer onboarding
+
+After successful submit, it displays whether the temporary-password email was sent.
