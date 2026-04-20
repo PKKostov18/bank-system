@@ -1,79 +1,98 @@
-import { useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../api/auth';
-import { extractApiErrorMessage } from '../api/http';
-import { getSession, saveSession } from '../utils/authStorage';
+import '../index.css';
 
 export function LoginPage() {
-  const existingSession = getSession();
-  const navigate = useNavigate();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  if (existingSession) {
-    return <Navigate to={existingSession.firstLogin ? '/first-login' : '/app'} replace />;
-  }
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
 
     try {
-      const response = await login({ email, password });
-      saveSession(response);
-      navigate(response.firstLogin ? '/first-login' : '/app', { replace: true });
-    } catch (submitError) {
-      setError(extractApiErrorMessage(submitError, 'Login failed. Please check your credentials.'));
+      await login({ email, password });
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Грешен имейл или парола');
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <main className="page page-center">
-      <section className="card auth-card">
-        <h1>Online Banking Sign In</h1>
-        <p>Use the email and temporary/personal password provided by the bank.</p>
+    <div className="home-container">
+      <div className="background-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="form-grid">
-          <label>
-            Email
+      <div className="glass-card" style={{ maxWidth: '450px' }}>
+        <div className="brand-badge">Сигурен достъп</div>
+
+        <h1 className="main-title" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Вход</h1>
+        <p className="subtitle" style={{ marginBottom: '2rem' }}>Добре дошли отново в NBU Bank</p>
+
+        {error && (
+          <div style={{
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            color: '#ef4444',
+            padding: '1rem',
+            borderRadius: '12px',
+            marginBottom: '1.5rem',
+            border: '1px solid rgba(239, 68, 68, 0.2)',
+            fontSize: '0.9rem'
+          }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+          <div style={{ textAlign: 'left' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: '#94a3b8', marginLeft: '0.5rem' }}>Имейл адрес</label>
             <input
               type="email"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               required
-              autoComplete="email"
+              className="glass-input"
+              placeholder="name@company.com"
             />
-          </label>
+          </div>
 
-          <label>
-            Password
+          <div style={{ textAlign: 'left' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: '#94a3b8', marginLeft: '0.5rem' }}>Парола</label>
             <input
               type="password"
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               required
-              autoComplete="current-password"
+              className="glass-input"
+              placeholder="••••••••"
             />
-          </label>
+          </div>
 
-          {error && <p className="error-text">{error}</p>}
-
-          <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Signing in...' : 'Sign in'}
+            <center>
+          <button
+            type="submit"
+            className="btn-primary"
+            disabled={isLoading}
+            style={{ marginTop: '1rem', cursor: isLoading ? 'not-allowed' : 'pointer', opacity: isLoading ? 0.7 : 1 }}
+          >
+            {isLoading ? 'Проверка...' : 'Влез в профила'}
           </button>
+          </center>
         </form>
 
-        <Link className="link-muted" to="/">
-          Back to home page
-        </Link>
-      </section>
-    </main>
+        <div style={{ marginTop: '2rem', fontSize: '0.9rem' }}>
+          <Link to="/" style={{ color: '#94a3b8', textDecoration: 'none' }}>← Обратно към началото</Link>
+        </div>
+      </div>
+    </div>
   );
 }
-

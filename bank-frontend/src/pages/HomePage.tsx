@@ -1,21 +1,44 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
+import '../index.css';
 
 export function HomePage() {
   return (
-    <main className="page page-center">
-      <section className="card hero-card">
-        <h1>Bank System</h1>
-        <p>Secure online banking for individual and corporate customers.</p>
-        <p>Access is available only for existing customers created through a bank branch.</p>
-        <div className="hero-actions">
-          <Link className="btn btn-primary" to="/login">
-            Sign in
+    <div className="home-container">
+      <div className="background-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+        <div className="shape shape-3"></div>
+      </div>
+
+      <div className="glass-card">
+        <div className="brand-badge">
+          NBU Bank System
+        </div>
+
+        <h1 className="main-title">
+          Вашите пари, <br/>
+          <span className="gradient-text">преосмислени</span>.
+        </h1>
+
+        <p className="subtitle">
+          Вашият сигурен и надежден партньор в банковото дело. Управлявайте сметките си с лекота и сигурност.
+        </p>
+
+        <div className="action-buttons">
+          <Link to="/login" className="btn-primary">
+            Вход
           </Link>
-          <Link className="btn btn-secondary" to="/admin/secret-onboarding">
-            Open secret onboarding form
+
+          <Link to="/admin/onboarding/secret-path" className="btn-secondary">
+            Admin Onboarding
           </Link>
         </div>
-      </section>
-    </main>
+      </div>
+
+      <footer className="footer">
+        © 2024 NBU Bank System. Всички права запазени.
+      </footer>
+    </div>
   );
 }
