@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { createCorporateCustomer, createIndividualCustomer } from '../api/adminOnboarding';
 import { extractApiErrorMessage } from '../api/http';
 import type { OnboardingResponse } from '../types/auth';
+import { clearSession } from '../utils/authStorage';
+import '../index.css';
 
 type Mode = 'INDIVIDUAL' | 'CORPORATE';
 
 export function AdminOnboardingPage() {
+  const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>('INDIVIDUAL');
   const [adminSecret, setAdminSecret] = useState('');
 
@@ -55,78 +58,103 @@ export function AdminOnboardingPage() {
     }
   }
 
-  return (
-    <main className="page">
-      <section className="card onboarding-card">
-        <h1>Secret Admin Onboarding</h1>
-        <p>Create bank customers directly with the hidden admin endpoints.</p>
+  function handleLogout() {
+    clearSession();
+    navigate('/login', { replace: true });
+  }
 
-        <div className="segmented-control" role="tablist" aria-label="Customer type">
-          <button
-            type="button"
-            className={`segment-btn ${mode === 'INDIVIDUAL' ? 'segment-btn-active' : ''}`}
-            onClick={() => setMode('INDIVIDUAL')}
-          >
-            Individual
-          </button>
-          <button
-            type="button"
-            className={`segment-btn ${mode === 'CORPORATE' ? 'segment-btn-active' : ''}`}
-            onClick={() => setMode('CORPORATE')}
-          >
-            Corporate
+  return (
+    <div className="home-container">
+      <div className="background-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+      </div>
+
+      <section className="glass-card auth-card page-card-wide page-content-left">
+        <div className="panel-topbar">
+          <div className="brand-badge">Employee area</div>
+          <button type="button" className="btn-secondary btn-compact" onClick={handleLogout}>
+            Logout
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="form-grid">
-          <label>
-            Admin secret
+        <h1 className="main-title page-title">Customer onboarding</h1>
+        <p className="subtitle page-subtitle page-subtitle-tight">
+          Create new bank customers with the secured onboarding endpoints.
+        </p>
+
+        <div className="segmented-control-wrap">
+          <div className="segmented-control" role="tablist" aria-label="Customer type">
+            <button
+              type="button"
+              className={`segment-btn ${mode === 'INDIVIDUAL' ? 'segment-btn-active' : ''}`}
+              onClick={() => setMode('INDIVIDUAL')}
+            >
+              Individual
+            </button>
+            <button
+              type="button"
+              className={`segment-btn ${mode === 'CORPORATE' ? 'segment-btn-active' : ''}`}
+              onClick={() => setMode('CORPORATE')}
+            >
+              Corporate
+            </button>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="onboarding-form-grid">
+          <label className="form-field">
+            <span className="form-label">Admin secret</span>
             <input
               type="password"
               value={adminSecret}
               onChange={(event) => setAdminSecret(event.target.value)}
               required
               autoComplete="off"
+              className="glass-input"
             />
           </label>
 
-          <label>
-            Customer email
+          <label className="form-field">
+            <span className="form-label">Customer email</span>
             <input
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               required
               autoComplete="off"
+              className="glass-input"
             />
           </label>
 
           {mode === 'INDIVIDUAL' ? (
             <>
-              <label>
-                First name
+              <label className="form-field">
+                <span className="form-label">First name</span>
                 <input
                   type="text"
                   value={firstName}
                   onChange={(event) => setFirstName(event.target.value)}
                   required
                   maxLength={100}
+                  className="glass-input"
                 />
               </label>
 
-              <label>
-                Last name
+              <label className="form-field">
+                <span className="form-label">Last name</span>
                 <input
                   type="text"
                   value={lastName}
                   onChange={(event) => setLastName(event.target.value)}
                   required
                   maxLength={100}
+                  className="glass-input"
                 />
               </label>
 
-              <label>
-                EGN (10 digits)
+              <label className="form-field">
+                <span className="form-label">EGN (10 digits)</span>
                 <input
                   type="text"
                   value={egn}
@@ -134,24 +162,26 @@ export function AdminOnboardingPage() {
                   required
                   pattern="[0-9]{10}"
                   maxLength={10}
+                  className="glass-input"
                 />
               </label>
             </>
           ) : (
             <>
-              <label>
-                Company name
+              <label className="form-field">
+                <span className="form-label">Company name</span>
                 <input
                   type="text"
                   value={companyName}
                   onChange={(event) => setCompanyName(event.target.value)}
                   required
                   maxLength={200}
+                  className="glass-input"
                 />
               </label>
 
-              <label>
-                EIK (9 to 13 digits)
+              <label className="form-field">
+                <span className="form-label">EIK (9 to 13 digits)</span>
                 <input
                   type="text"
                   value={eik}
@@ -159,38 +189,43 @@ export function AdminOnboardingPage() {
                   required
                   pattern="[0-9]{9,13}"
                   maxLength={13}
+                  className="glass-input"
                 />
               </label>
 
-              <label>
-                Representative first name
+              <label className="form-field">
+                <span className="form-label">Representative first name</span>
                 <input
                   type="text"
                   value={representativeFirstName}
                   onChange={(event) => setRepresentativeFirstName(event.target.value)}
                   required
                   maxLength={100}
+                  className="glass-input"
                 />
               </label>
 
-              <label>
-                Representative last name
+              <label className="form-field">
+                <span className="form-label">Representative last name</span>
                 <input
                   type="text"
                   value={representativeLastName}
                   onChange={(event) => setRepresentativeLastName(event.target.value)}
                   required
                   maxLength={100}
+                  className="glass-input"
                 />
               </label>
             </>
           )}
 
-          {error && <p className="error-text">{error}</p>}
+          {error && <div className="status-banner status-banner-error">{error}</div>}
 
-          <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Creating customer...' : 'Create customer'}
-          </button>
+          <div className="form-actions">
+            <button className="btn-primary submit-btn-fixed" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Creating customer...' : 'Create customer'}
+            </button>
+          </div>
         </form>
 
         {result && (
@@ -222,12 +257,8 @@ export function AdminOnboardingPage() {
             )}
           </section>
         )}
-
-        <Link className="link-muted" to="/">
-          Back to home page
-        </Link>
       </section>
-    </main>
+    </div>
   );
 }
 

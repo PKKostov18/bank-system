@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { clearSession, getSession } from '../utils/authStorage';
+import '../index.css';
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -11,21 +12,35 @@ export function DashboardPage() {
   }
 
   return (
-    <main className="page">
-      <header className="topbar">
-        <h1>Online Banking</h1>
-        <button className="btn btn-secondary" onClick={handleLogout}>
-          Sign out
-        </button>
-      </header>
+    <div className="home-container">
+      <div className="background-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-3"></div>
+      </div>
 
-      <section className="card">
-        <h2>Welcome</h2>
-        <p>You have successfully signed in to the system.</p>
-        <p>Email: {session?.email}</p>
-        <p>Role: {session?.role}</p>
+      <section className="glass-card auth-card page-card-wide page-content-left">
+        <div className="panel-topbar">
+          <div className="brand-badge">Online banking</div>
+          <button type="button" className="btn-secondary btn-compact" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+
+        <h1 className="main-title page-title">Dashboard</h1>
+        <p className="subtitle page-subtitle page-subtitle-tight">
+          You are successfully signed in to your account.
+        </p>
+
+        <div className="result-panel">
+          <p>
+            <strong>Email:</strong> {session?.email}
+          </p>
+          <p>
+            <strong>Role:</strong> {session?.role}
+          </p>
+        </div>
       </section>
-    </main>
+    </div>
   );
 }
 

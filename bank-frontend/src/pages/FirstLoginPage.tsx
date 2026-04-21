@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { changePassword } from '../api/auth';
 import { extractApiErrorMessage } from '../api/http';
 import { getSession, markFirstLoginDone } from '../utils/authStorage';
+import '../index.css';
 
 export function FirstLoginPage() {
   const session = getSession();
@@ -45,25 +46,36 @@ export function FirstLoginPage() {
   }
 
   return (
-    <main className="page page-center">
-      <section className="card auth-card">
-        <h1>First Login</h1>
-        <p>For security reasons, you must replace your temporary password with a personal one.</p>
+    <div className="home-container">
+      <div className="background-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="form-grid">
-          <label>
-            Current password
+      <div className="glass-card auth-card auth-card-medium">
+        <div className="brand-badge">First login security</div>
+        <h1 className="main-title page-title">
+          Change temporary password
+        </h1>
+        <p className="subtitle page-subtitle">
+          For your security, set a personal password before continuing.
+        </p>
+
+        <form onSubmit={handleSubmit} className="auth-form-stack">
+          <div className="form-field">
+            <label className="form-label">Current password</label>
             <input
               type="password"
               value={currentPassword}
               onChange={(event) => setCurrentPassword(event.target.value)}
               required
               autoComplete="current-password"
+              className="glass-input"
             />
-          </label>
+          </div>
 
-          <label>
-            New password
+          <div className="form-field">
+            <label className="form-label">New password</label>
             <input
               type="password"
               value={newPassword}
@@ -71,11 +83,12 @@ export function FirstLoginPage() {
               required
               autoComplete="new-password"
               minLength={8}
+              className="glass-input"
             />
-          </label>
+          </div>
 
-          <label>
-            Confirm new password
+          <div className="form-field">
+            <label className="form-label">Confirm new password</label>
             <input
               type="password"
               value={confirmPassword}
@@ -83,17 +96,18 @@ export function FirstLoginPage() {
               required
               autoComplete="new-password"
               minLength={8}
+              className="glass-input"
             />
-          </label>
+          </div>
 
-          {error && <p className="error-text">{error}</p>}
+          {error && <div className="status-banner status-banner-error">{error}</div>}
 
-          <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Saving...' : 'Change password'}
+          <button className="btn-primary auth-submit-btn" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Saving...' : 'Update password'}
           </button>
         </form>
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }
 

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../api/auth';
+import { getSession, saveSession } from '../utils/authStorage';
 import '../index.css';
 
 export function LoginPage() {
@@ -9,6 +10,24 @@ export function LoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const session = getSession();
+
+  useEffect(() => {
+    if (!session) {
+      return;
+    }
+
+    if (session.role === 'EMPLOYEE') {
+      navigate('/admin/secret-onboarding', { replace: true });
+      return;
+    }
+
+    navigate(session.firstLogin ? '/first-login' : '/app', { replace: true });
+  }, [navigate, session]);
+
+  if (session) {
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,10 +35,17 @@ export function LoginPage() {
     setIsLoading(true);
 
     try {
-      await login({ email, password });
-      navigate('/dashboard');
+      const auth = await login({ email, password });
+      saveSession(auth);
+
+      if (auth.role === 'EMPLOYEE') {
+        navigate('/admin/secret-onboarding', { replace: true });
+        return;
+      }
+
+      navigate(auth.firstLogin ? '/first-login' : '/app', { replace: true });
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Грешен имейл или парола');
+      setError(err.response?.data?.message || 'Invalid email or password.');
     } finally {
       setIsLoading(false);
     }
@@ -32,29 +58,21 @@ export function LoginPage() {
         <div className="shape shape-2"></div>
       </div>
 
-      <div className="glass-card" style={{ maxWidth: '450px' }}>
-        <div className="brand-badge">Сигурен достъп</div>
+      <div className="glass-card auth-card auth-card-login">
+        <div className="brand-badge">Secure access</div>
 
-        <h1 className="main-title" style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Вход</h1>
-        <p className="subtitle" style={{ marginBottom: '2rem' }}>Добре дошли отново в NBU Bank</p>
+        <h1 className="main-title page-title">Sign in</h1>
+        <p className="subtitle page-subtitle">Welcome back to NBU Bank System</p>
 
         {error && (
-          <div style={{
-            backgroundColor: 'rgba(239, 68, 68, 0.1)',
-            color: '#ef4444',
-            padding: '1rem',
-            borderRadius: '12px',
-            marginBottom: '1.5rem',
-            border: '1px solid rgba(239, 68, 68, 0.2)',
-            fontSize: '0.9rem'
-          }}>
+          <div className="status-banner status-banner-error status-banner-inline">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-          <div style={{ textAlign: 'left' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: '#94a3b8', marginLeft: '0.5rem' }}>Имейл адрес</label>
+        <form onSubmit={handleSubmit} className="auth-form-stack">
+          <div className="form-field">
+            <label className="form-label">Email address</label>
             <input
               type="email"
               value={email}
@@ -65,8 +83,8 @@ export function LoginPage() {
             />
           </div>
 
-          <div style={{ textAlign: 'left' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: '#94a3b8', marginLeft: '0.5rem' }}>Парола</label>
+          <div className="form-field">
+            <label className="form-label">Password</label>
             <input
               type="password"
               value={password}
@@ -77,20 +95,19 @@ export function LoginPage() {
             />
           </div>
 
-            <center>
-          <button
-            type="submit"
-            className="btn-primary"
-            disabled={isLoading}
-            style={{ marginTop: '1rem', cursor: isLoading ? 'not-allowed' : 'pointer', opacity: isLoading ? 0.7 : 1 }}
-          >
-            {isLoading ? 'Проверка...' : 'Влез в профила'}
-          </button>
-          </center>
+          <div className="auth-submit-wrap">
+            <button
+              type="submit"
+              className="btn-primary auth-submit-btn"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Signing in...' : 'Sign in'}
+            </button>
+          </div>
         </form>
 
-        <div style={{ marginTop: '2rem', fontSize: '0.9rem' }}>
-          <Link to="/" style={{ color: '#94a3b8', textDecoration: 'none' }}>← Обратно към началото</Link>
+        <div className="auth-back-link">
+          <Link to="/" className="link-muted">← Back to home</Link>
         </div>
       </div>
     </div>

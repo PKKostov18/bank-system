@@ -63,7 +63,7 @@ The API no longer returns plaintext temporary passwords.
 - `MAIL_PASSWORD`
 - `MAIL_SMTP_AUTH`
 - `MAIL_SMTP_STARTTLS`
-- `APP_MAIL_FROM`
+- `APP_MAIL_FROM` (optional, defaults to `no-reply@banksystem.com`)
 
 You can store these in `bank-system/.env` (auto-loaded by Spring) instead of setting IDE environment variables.
 
@@ -87,20 +87,26 @@ Mail inbox UI:
 
 When onboarding succeeds, customers receive an email with their temporary password and first-login instructions.
 
-### Real SMTP delivery (example for ABV)
+### Real SMTP delivery (custom domain sender)
 
 Set environment variables before starting backend:
 
 ```powershell
-$env:MAIL_HOST="smtp.abv.bg"
-$env:MAIL_PORT="465"
-$env:MAIL_USERNAME="your_abv_email@abv.bg"
-$env:MAIL_PASSWORD="your_abv_password"
+$env:MAIL_HOST="smtp.your-provider.com"
+$env:MAIL_PORT="587"
+$env:MAIL_USERNAME="no-reply@banksystem.com"
+$env:MAIL_PASSWORD="your_provider_smtp_password"
 $env:MAIL_SMTP_AUTH="true"
-$env:MAIL_SMTP_STARTTLS="false"
-$env:MAIL_SMTP_SSL="true"
-$env:APP_MAIL_FROM="your_abv_email@abv.bg"
+$env:MAIL_SMTP_STARTTLS="true"
+$env:MAIL_SMTP_SSL="false"
+$env:APP_MAIL_FROM="no-reply@banksystem.com"
 ```
+
+Prerequisites for real delivery:
+
+- `banksystem.com` must be verified in your SMTP provider.
+- SPF and DKIM DNS records must be configured for `banksystem.com`.
+- The sender identity `no-reply@banksystem.com` must be allowed by the provider.
 
 The onboarding response now includes `emailDeliveryChannel` and `emailRelay` so you can verify whether emails go to local MailHog or external SMTP.
 
