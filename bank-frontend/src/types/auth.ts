@@ -1,10 +1,12 @@
 export type UserRole = 'CUSTOMER' | 'EMPLOYEE';
+export type CustomerType = 'INDIVIDUAL' | 'CORPORATE';
 
 export interface AuthResponse {
   token: string;
   customerId: number;
   email: string;
   role: UserRole;
+  customerType: CustomerType | null;
   firstLogin: boolean;
 }
 
@@ -27,6 +29,7 @@ export interface AuthSession {
   customerId: number;
   email: string;
   role: UserRole;
+  customerType: CustomerType | null;
   firstLogin: boolean;
 }
 
@@ -53,3 +56,23 @@ export interface OnboardingResponse {
   emailDeliveryChannel: 'LOCAL_MAILHOG' | 'EXTERNAL_SMTP';
   emailRelay: string;
 }
+
+export type BankAccountStatus = 'ACTIVE' | 'CLOSED';
+
+export interface AccountStatusResponse {
+  hasAccount: boolean;
+  accountId: number | null;
+  iban: string | null;
+  balance: number | null;
+  status: BankAccountStatus | null;
+}
+
+export interface AccountOpeningResponse {
+  created: boolean;
+  accountId: number;
+  iban: string;
+  balance: number;
+  status: BankAccountStatus;
+  message: string;
+}
+

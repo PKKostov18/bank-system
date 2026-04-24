@@ -18,6 +18,11 @@ body {
   z-index: 1;
 }
 
+.home-container-top {
+  justify-content: flex-start;
+  padding-top: 1.4rem;
+}
+
 .background-shapes {
   position: absolute;
   top: 0;
@@ -229,6 +234,14 @@ body {
   max-width: 520px;
 }
 
+.page-card-wide {
+  max-width: 760px;
+}
+
+.page-content-left {
+  text-align: left;
+}
+
 .page-title {
   font-size: clamp(2rem, 4vw, 2.5rem);
   margin-bottom: 0.6rem;
@@ -236,6 +249,10 @@ body {
 
 .page-subtitle {
   margin-bottom: 1.8rem;
+}
+
+.page-subtitle-tight {
+  margin-bottom: 1.6rem;
 }
 
 .auth-form-stack {
@@ -275,6 +292,63 @@ body {
 
 .link-muted:hover {
   color: #cbd5e1;
+}
+
+.dashboard-actions {
+  margin-top: 0.75rem;
+}
+
+.dashboard-open-btn {
+  max-width: 320px;
+}
+
+.status-success-text {
+  margin-top: 0.9rem;
+  color: #22c55e;
+}
+
+.status-error-text {
+  margin-top: 0.9rem;
+  color: #ef4444;
+}
+
+.account-status-panel {
+  min-height: 0;
+}
+
+.account-status-panel-loading {
+  min-height: 250px;
+}
+
+.account-status-skeleton {
+  margin-top: 0.7rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.skeleton-line {
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(51, 65, 85, 0.45), rgba(100, 116, 139, 0.35), rgba(51, 65, 85, 0.45));
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.3s linear infinite;
+}
+
+.skeleton-line-short {
+  width: 42%;
+}
+
+.skeleton-line-medium {
+  width: 67%;
+}
+
+@keyframes skeletonShimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
 }
 
 .panel-topbar {
@@ -383,6 +457,18 @@ body {
 }
 
 @media (max-width: 720px) {
+  .home-container-top {
+    padding-top: 1rem;
+  }
+
+  .account-status-panel {
+    min-height: 0;
+  }
+
+  .account-status-panel-loading {
+    min-height: 220px;
+  }
+
   .onboarding-form-grid {
     grid-template-columns: 1fr;
   }

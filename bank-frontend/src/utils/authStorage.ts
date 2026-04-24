@@ -38,23 +38,28 @@ function isValidSessionShape(value: unknown): value is AuthSession {
   }
 
   const maybeSession = value as Partial<AuthSession>;
+  const customerTypeValue = (value as Record<string, unknown>).customerType;
   return (
     typeof maybeSession.token === 'string' &&
     typeof maybeSession.customerId === 'number' &&
     typeof maybeSession.email === 'string' &&
     (maybeSession.role === 'CUSTOMER' || maybeSession.role === 'EMPLOYEE') &&
+    (customerTypeValue === undefined || customerTypeValue === null || customerTypeValue === 'INDIVIDUAL' || customerTypeValue === 'CORPORATE') &&
     typeof maybeSession.firstLogin === 'boolean'
   );
 }
 
 export function saveSession(auth: AuthResponse): void {
-  const session: AuthSession = {
+  const session = {
     token: auth.token,
     customerId: auth.customerId,
     email: auth.email,
     role: auth.role,
     firstLogin: auth.firstLogin,
-  };
+    ...(('customerType' in auth)
+      ? { customerType: (auth as AuthResponse & { customerType?: 'INDIVIDUAL' | 'CORPORATE' | null }).customerType ?? null }
+      : {}),
+  } as AuthSession;
   localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session));
 }
 

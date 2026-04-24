@@ -41,6 +41,7 @@ public class AuthService {
                 customer.getId(),
                 customer.getEmail(),
                 customer.getUserRole(),
+                customer.getCustomerType(),
                 customer.isFirstLogin()
         );
     }
